@@ -1,4 +1,8 @@
 
+using FileManagementSystemBE.Middleware;
+using FileManagementSystemBE.Model;
+using Microsoft.EntityFrameworkCore;
+
 namespace FileManagementSystemBE
 {
     public class Program
@@ -8,35 +12,31 @@ namespace FileManagementSystemBE
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            ConfigureServices(builder.Services);
+            ConfigureServices(builder.Services, builder);
 
             var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            //if (app.Environment.IsDevelopment())
-            //{
-            //    app.UseSwagger();
-            //    app.UseSwaggerUI();
-            //}
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
             ConfigureApplication(app);
             app.Run();
         }
-        private static void ConfigureServices(IServiceCollection services)
+        private static void ConfigureServices(IServiceCollection services, WebApplicationBuilder builder)
         {
-            {
-                services.AddControllers();
-                // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-                services.AddEndpointsApiExplorer();
-                services.AddSwaggerGen();
-            }
+            string? connectionString = builder.Configuration.GetConnectionString("pgsql");
+            services.AddDbContext<MockupContext>(builderOption =>
+               {
+                   builderOption.UseNpgsql(connectionString);
+               });
+            services.AddControllers();
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
         }
         private static void ConfigureApplication(WebApplication app)
         {
-            app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
         }
     }

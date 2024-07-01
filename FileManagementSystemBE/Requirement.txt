@@ -1,0 +1,1 @@
+dotnet ef dbcontext scaffold "Server=localhost;User Id=postgres;Password=170116Abc;Database=mockup;" Npgsql.EntityFrameworkCore.PostgreSQL -o Model --project FileManagementSystemBE
