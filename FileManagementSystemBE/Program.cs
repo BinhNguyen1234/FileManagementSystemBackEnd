@@ -25,10 +25,13 @@ namespace FileManagementSystemBE
         }
         private static void ConfigureServices(IServiceCollection services, WebApplicationBuilder builder)
         {
+         
             string? connectionString = builder.Configuration.GetConnectionString("pgsql");
             services.AddDbContext<MockupContext>(builderOption =>
                {
                    builderOption.UseNpgsql(connectionString);
+                   builderOption.EnableSensitiveDataLogging();
+                 
                });
             services.AddControllers();
             services.AddEndpointsApiExplorer();
